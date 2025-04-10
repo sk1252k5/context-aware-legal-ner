@@ -1,0 +1,40 @@
+# Core Libraries
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+
+# Tokenization & NLP
+nltk
+spacy
+transformers
+datasets
+sentencepiece
+beautifulsoup4
+
+# Deep Learning
+torch
+torchcrf
+tensorflow
+keras
+
+# LegalBERT
+huggingface_hub
+
+# FastAPI & Deployment
+fastapi
+uvicorn
+pydantic
+
+# Summarization Models
+bert-extractive-summarizer
+accelerate
+
+# Utility
+tqdm
+regex
+python-multipart
+
+# Visualization
+plotly
