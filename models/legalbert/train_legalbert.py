@@ -88,4 +88,4 @@ trainer.train()
 # Save final model
 model.save_pretrained("models/legalbert/final_model")
 tokenizer.save_pretrained("models/legalbert/final_model")
-print("✅ LegalBERT fine-tuning complete!")
+print("LegalBERT fine-tuning complete!")

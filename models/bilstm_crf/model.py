@@ -12,6 +12,10 @@ class BiLSTM_CRF(nn.Module):
                             bidirectional=True, batch_first=True)
         self.hidden2tag = nn.Linear(hidden_dim, tagset_size)
         self.crf = CRF(tagset_size, batch_first=True)
+    def _get_lstm_features(self, x):
+        embeds = self.embedding(x)
+        lstm_out, _ = self.lstm(embeds)
+        return self.hidden2tag(lstm_out)
 
     def forward(self, x, tags=None, mask=None):
         embeds = self.embedding(x)
@@ -22,3 +26,7 @@ class BiLSTM_CRF(nn.Module):
             return loss
         else:
             return self.crf.decode(emissions, mask=mask)
+    def decode(self, x):
+        mask = x != 0
+        emissions = self._get_lstm_features(x)
+        return self.crf.decode(emissions, mask=mask)

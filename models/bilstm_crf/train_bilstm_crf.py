@@ -1,11 +1,10 @@
-# models/bilstm_crf/train_bilstm_crf.py
-
 import torch
 from torch.utils.data import DataLoader
 from sklearn.metrics import classification_report
 from models.bilstm_crf.model import BiLSTM_CRF
 from models.bilstm_crf.utils import build_vocab, encode_sentences, NERDataset
-import pickle, json
+from torch.nn.utils.rnn import pad_sequence
+import pickle, json, os
 
 # Load your preprocessed IOB-tagged data
 with open('data/processed/splits/train.iob.json') as f:
@@ -13,7 +12,6 @@ with open('data/processed/splits/train.iob.json') as f:
 
 with open('data/processed/splits/val.iob.json') as f:
     val_data = json.load(f)
-
 
 # Extract tokens and labels
 train_sentences = [sample["tokens"] for sample in train_data]
@@ -27,6 +25,13 @@ word2idx = build_vocab(train_sentences)
 tag2idx = build_vocab(train_labels)
 idx2tag = {v: k for k, v in tag2idx.items()}
 
+# Save vocab and tag mappings
+os.makedirs("models/bilstm_crf", exist_ok=True)
+with open("models/bilstm_crf/vocab.pkl", "wb") as f:
+    pickle.dump(word2idx, f)
+with open("models/bilstm_crf/tag2idx.pkl", "wb") as f:
+    pickle.dump(tag2idx, f)
+
 # Encode
 X_train = encode_sentences(train_sentences, word2idx)
 y_train = encode_sentences(train_labels, tag2idx)
@@ -34,9 +39,7 @@ y_train = encode_sentences(train_labels, tag2idx)
 X_val = encode_sentences(val_sentences, word2idx)
 y_val = encode_sentences(val_labels, tag2idx)
 
-# Pad sequences
-from torch.nn.utils.rnn import pad_sequence
-
+# Padding function
 def pad(batch):
     tokens, labels = zip(*batch)
     tokens = [torch.tensor(seq, dtype=torch.long) for seq in tokens]
@@ -46,7 +49,6 @@ def pad(batch):
     mask = tokens != 0
     return tokens, labels, mask
 
-
 # Create dataset and dataloader
 train_dataset = NERDataset({"input_ids": X_train}, y_train)
 val_dataset = NERDataset({"input_ids": X_val}, y_val)
@@ -54,12 +56,12 @@ val_dataset = NERDataset({"input_ids": X_val}, y_val)
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, collate_fn=pad)
 val_loader = DataLoader(val_dataset, batch_size=8, shuffle=False, collate_fn=pad)
 
-# Model
+# Initialize model
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = BiLSTM_CRF(len(word2idx), len(tag2idx)).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-# Training Loop
+# Training loop
 for epoch in range(10):
     model.train()
     total_loss = 0
@@ -72,6 +74,13 @@ for epoch in range(10):
         total_loss += loss.item()
     print(f"Epoch {epoch+1}, Loss: {total_loss:.4f}")
 
+with open("models/bilstm_crf/word2idx.json", "w") as f:
+    json.dump(word2idx, f)
+
+with open("models/bilstm_crf/tag2idx.json", "w") as f:
+    json.dump(tag2idx, f)
 # Save model
 torch.save(model.state_dict(), "models/bilstm_crf/bilstm_crf.pt")
-print("✅ Model training complete and saved!")
+print("BiLSTM-CRF training complete and model saved!")
+
+

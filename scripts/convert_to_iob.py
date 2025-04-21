@@ -34,4 +34,4 @@ for split in ["train", "val", "test"]:
             for word, tag in pairs:
                 f.write(f"{word} {tag}\n")
             f.write("\n")
-print("✅ IOB tagging completed for train, val, and test splits.")
+print("IOB tagging completed for train, val, and test splits.")

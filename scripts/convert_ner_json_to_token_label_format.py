@@ -39,7 +39,7 @@ def convert_file(input_path, output_path):
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(converted, f, indent=2)
 
-    print(f"✅ Converted {len(converted)} records from {input_path} to {output_path}")
+    print(f"Converted {len(converted)} records from {input_path} to {output_path}")
 
 # Run the conversion
 if __name__ == "__main__":

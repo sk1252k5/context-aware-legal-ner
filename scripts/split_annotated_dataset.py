@@ -36,4 +36,4 @@ with open("data/processed/splits/val.json", "w", encoding="utf-8") as f:
 with open("data/processed/splits/test.json", "w", encoding="utf-8") as f:
     json.dump(test_set, f, indent=2)
 
-print(f"✅ Splits complete: {len(train_set)} train, {len(val_set)} val, {len(test_set)} test")
+print(f"Splits complete: {len(train_set)} train, {len(val_set)} val, {len(test_set)} test")

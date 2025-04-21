@@ -18,4 +18,4 @@ os.makedirs(os.path.dirname(save_path), exist_ok=True)
 with open(save_path, "w", encoding="utf-8") as f:
     json.dump(train_data, f, indent=2)
 
-print(f"✅ ILDC Expert dataset saved to {save_path}")
+print(f"ILDC Expert dataset saved to {save_path}")

@@ -53,4 +53,4 @@ for idx, item in tqdm(enumerate(raw_data), total=len(raw_data)):
 with open("data/processed/ildc_annotated_rule_based.json", "w", encoding="utf-8") as f:
     json.dump(annotated_data, f, indent=2, ensure_ascii=False)
 
-print(f"✅ Annotated {len(annotated_data)} cases saved to data/processed/ildc_annotated_rule_based.json")
+print(f"Annotated {len(annotated_data)} cases saved to data/processed/ildc_annotated_rule_based.json")
